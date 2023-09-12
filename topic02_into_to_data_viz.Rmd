@@ -40,23 +40,23 @@ head(temp) %>%
 
 Investigating the relationship between `gdp` and `educ` by mapping them to the `x` and `y` (position) visual cues, respectively.
 ```{r}
-ggplot(data = temp, aes(x = educ, y = gdp)) +
-  geom_point()
+ggplot(data = temp) +
+  geom_point(mapping = aes(x = educ, y = gdp))
 
 # aesthetic can also be introduced in the ggplot
-# ggplot(data = temp) +
-#   geom_point(aes(x = educ, y = gdp))
+# ggplot(data = temp, mapping = aes(x = educ, y = gdp)) +
+#   geom_point()
 ```
 
 ... mapping the `net_users` (categorical) variable to the `color` visual cue.
 ```{r}
-ggplot(data = temp, aes(x = educ, y = gdp, color = net_users)) +
+ggplot(data = temp, mapping = aes(x = educ, y = gdp, color = net_users)) +
   geom_point()
 ```
 
 ... faceting the `net_users` to multiple columns
 ```{r}
-ggplot(data = temp, aes(x = educ, y = gdp, color = net_users)) +
+ggplot(data = temp, mapping = aes(x = educ, y = gdp, color = net_users)) +
   geom_point() +
   facet_grid(. ~ net_users)
 ```
@@ -64,19 +64,19 @@ ggplot(data = temp, aes(x = educ, y = gdp, color = net_users)) +
 ... adding histogram layers beneath the facets
 ```{r}
 ggplot(data = temp) +
-  geom_histogram(aes(y = gdp)) +
-  geom_point(aes(x = educ, y = gdp, color = net_users)) +
+  geom_histogram(mapping = aes(y = gdp)) +
+  geom_point(mapping = aes(x = educ, y = gdp, color = net_users)) +
   facet_grid(. ~ net_users)
 ```
 
 ... going crazy with testing
 ```{r}
-ggplot(data = temp, aes(x = educ, 
-                        y = gdp, 
-                        color = area, 
-                        size = pop, 
-                        label = country, 
-                        linewidth=pop)) + 
+ggplot(data = temp, mapping = aes(x = educ, 
+                                  y = gdp, 
+                                  color = area, 
+                                  size = pop, 
+                                  label = country, 
+                                  linewidth=pop)) + 
   geom_point() +
   geom_col() +
   geom_text() +
