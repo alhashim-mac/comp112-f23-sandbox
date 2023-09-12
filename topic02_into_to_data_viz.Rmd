@@ -1,0 +1,89 @@
+---
+title: "Topic 2 Introduction to Data Visualization"
+author: "Amin G. Alhashim"
+date: "9/11/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load all required packages
+```{r, results='hide'}
+library(mdsr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+# CIACountries Data
+
+This is an example in [Chapter 3 A gramer for graphics](https://mdsr-book.github.io/mdsr2e/ch-vizII.html) of Modern Data Science with R book.
+
+Filtering out observation with NA values
+```{r}
+temp <- CIACountries %>% na.omit()
+```
+
+
+Printing the first few observations
+```{r}
+head(temp) %>% 
+  kbl() %>% 
+  kable_styling(
+    fixed_thead = T, 
+    bootstrap_options = c("striped", "hover", "condensed", "responsive")
+  )
+```
+
+
+Investigating the relationship between `gdp` and `educ` by mapping them to the `x` and `y` (position) visual cues, respectively.
+```{r}
+ggplot(data = temp, aes(x = educ, y = gdp)) +
+  geom_point()
+
+# aesthetic can also be introduced in the ggplot
+# ggplot(data = temp) +
+#   geom_point(aes(x = educ, y = gdp))
+```
+
+... mapping the `net_users` (categorical) variable to the `color` visual cue.
+```{r}
+ggplot(data = temp, aes(x = educ, y = gdp, color = net_users)) +
+  geom_point()
+```
+
+... faceting the `net_users` to multiple columns
+```{r}
+ggplot(data = temp, aes(x = educ, y = gdp, color = net_users)) +
+  geom_point() +
+  facet_grid(. ~ net_users)
+```
+
+... adding histogram layers beneath the facets
+```{r}
+ggplot(data = temp) +
+  geom_histogram(aes(y = gdp)) +
+  geom_point(aes(x = educ, y = gdp, color = net_users)) +
+  facet_grid(. ~ net_users)
+```
+
+... going crazy with testing
+```{r}
+ggplot(data = temp, aes(x = educ, 
+                        y = gdp, 
+                        color = area, 
+                        size = pop, 
+                        label = country, 
+                        linewidth=pop)) + 
+  geom_point() +
+  geom_col() +
+  geom_text() +
+  labs(x = "Spending on Education", 
+       y = "GDP", 
+       color = "Area", 
+       size = "Population", 
+       linewidth = "Population")
+```
+
