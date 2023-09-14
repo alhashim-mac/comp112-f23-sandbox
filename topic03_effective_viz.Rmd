@@ -1,0 +1,45 @@
+---
+title: 'Topic 3 Effective Visualization'
+author: "Amin G. Alhashim"
+date: "9/13/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Load all required packages
+```{r, results='hide'}
+library(mdsr)
+library(tidyverse)
+library(kableExtra)
+```
+
+# CIACountries Data
+
+This is an example in [Chapter 3 A gramer for graphics](https://mdsr-book.github.io/mdsr2e/ch-vizII.html) of Modern Data Science with R book.
+
+Filtering out observation with NA values
+```{r}
+temp <- CIACountries %>% na.omit()
+```
+
+
+Printing the first few observations
+```{r}
+head(temp) %>% 
+  kbl() %>% 
+  kable_styling(
+    fixed_thead = T, 
+    bootstrap_options = c("striped", "hover", "condensed", "responsive")
+  )
+```
+
+Investigating the relationship between `gdp` and `educ` by mapping them to the `x` and `y` (position) visual cues, respectively while using an **accessible** color visual cue to represent the categories of percentage of users.
+```{r}
+ggplot(data = temp) +
+  geom_point(mapping = aes(x = educ, y = gdp, color = net_users)) +
+  scale_color_viridis_d()
+```
