@@ -1,0 +1,26 @@
+---
+title: "Topic 4 Bivariate Visualization"
+author: "Amin G. Alhashim"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading pakcages
+```{r}
+library(datasets)
+library(ggplot2)
+```
+
+
+# Alternative Text for Visualizations
+Below and example that illustrate how to add an alternative text to a visualization.  The alternative text will be embedded into the generated HTML file.  The alternative text will be hidden from the viewer, however, it will appear when the visualization fails to render.  The alternative text will also be used by the screen reader application, e.g., Windows 11 Narrator (win+ctr+enter to activate/deactivate), as a description for the visualization.
+```{r, fig.alt="A bar chart showing the number of cylinders of the cars in the `mtcars` data set from the `datasets` package.  Most of the cars are equipped with 8 cylinders, followed by 4 cylinders, and then 6 cylinders."}
+ggplot(data = mtcars, mapping = aes(x=cyl)) +
+  geom_bar()
+```
+
+
