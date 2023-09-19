@@ -1,0 +1,352 @@
+```{r 02_setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, message = FALSE)
+library(tidyverse)
+library(ggplot2)
+```
+
+
+## Eye Training for the Layered Grammar of Graphics {-}
+
+```{example, name="Basic questions to ask of a data graphic"}
+For your assigned graphic, discuss the following seven questions with your partner(s):
+
+1. What variables constitute the frame?
+2. What glyphs are used?
+3. What are the aesthetics for those glyphs?
+4. Which variable is mapped to each aesthetic?
+5. Which variable, if any, is used for faceting?
+6. Which scales are displayed with a guide?
+7. What raw data would be required for this plot, and what form should it be in?
+
+```
+
+> ANSWER:
+
+
+
+## An Example {-}
+
+
+The "Bechdel test", named after cartoonist Alison Bechdel, tests whether movies meet the following criteria:
+
+1. There are $\ge$ 2 (named) female characters;    
+2. these women talk to each other...     
+3. about something other than a man.
+
+In the fivethirtyeight.com article ["The Dollar-And-Cents Case Against Hollywood's Exclusion of Women"](http://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/), the authors analyze which Hollywood movies do/don't pass the test.  Their data are available in the `fivethirtyeight` package:
+
+
+```{r eval=TRUE}
+library(fivethirtyeight)
+data(bechdel)
+head(bechdel)
+```
+
+```{example}
+Before diving into any visualizations of these data, we first must understand its structure and contents. Discuss the following:  
+  
+  a. What are the units of observation and how many units are in this sample? 
+  b. What are the levels of the `clean_test` and `binary` variables?    
+  c. Check out the codebook for `bechdel` (`?bechdel`).  What's the difference between `domgross_2013` and `domgross`?    
+```
+
+> ANSWER: 
+
+```{r}
+
+```
+
+```{example}
+We'll consider *univariate* visualizations of the `clean_test` and `budget_2013` variables. Discuss the following:
+  
+  a. What features would we like a visualization of the *categorical* `clean_test` variable to capture?    
+  b. What features would we like a visualization of the *quantitative* `budget_2013` variable to capture?    
+
+```
+
+> ANSWER:
+
+
+## Categorical univariate visualization {-}
+
+We begin by stating a clear research question:
+
+> Among the movies in our sample, what fraction pass the Bechdel test?  Among those that fail the test, in which way do they fail (e.g., there are no women, there are women but they only talk about men,...)?  
+
+
+To answer the above research question, we can explore the categorical `clean_test` variable.  A table provides a simple summary of the number of movies that fall into each `clean_test` category:    
+
+```{r}
+table(bechdel$clean_test)
+```
+    
+```{example}
+Examine the table of `clean_test` data, and try to interpret it. What insights does it provide about the original research question?
+```
+
+> ANSWER:
+
+
+
+Because `clean_test` is a categorical variable, a **bar chart** provides an appropriate visualization of this table.  In examining the bar chart, keep your eyes on the following.
+
+- **variability**: Are cases evenly spread out among the categories or are some categories more common than others?    
+- **contextual implications**: In the context of your research, what do you learn from the bar chart?  How would you describe your findings to a broad audience?    
+
+```{example}
+Try out the code below that builds up from a simple to a customized bar chart. At each step determine how each piece of code contributes to the plot.    
+```
+  
+> ANSWER:    
+    
+```{r eval=TRUE}
+# plot 1: set up a plotting frame (a blank canvas)
+ggplot(bechdel, aes(x = clean_test))
+
+# plot 2: what changed / how did we change it?
+ggplot(bechdel, aes(x = clean_test)) +
+geom_bar()
+
+# plot 3: what changed / how did we change it?
+ggplot(bechdel, aes(x = clean_test)) +
+geom_bar() +
+labs(x = "Outcome of Bechdel Test", y = "Number of movies")
+
+# plot 4: what changed / how did we change it?
+ggplot(bechdel, aes(x = clean_test)) +
+geom_bar(color = "purple") +
+labs(x = "Outcome of Bechdel Test", y = "Number of movies")
+
+# plot 5: what changed / how did we change it?
+ggplot(bechdel, aes(x = clean_test)) +
+geom_bar(fill = "purple") +
+labs(x = "Outcome of Bechdel Test", y = "Number of movies")
+```
+
+
+
+
+```{example}
+Summarize the visualization: what did you learn about the distribution of the `clean_test` variable?    
+
+```
+
+> ANSWER:
+
+```{example}
+Let's return to our research question: What percent of movies in the sample pass the Bechdel test? Among those that fail the test, in which way do they fail? 
+
+```
+
+> ANSWER: 
+
+```{r}
+
+```
+
+## Quantitative univariate visualization {-}
+
+To motivate quantitative visualizations, consider a second research question 
+
+> Among the movies in our sample, what's the range of budgets?  What's the typical budget?  The largest/smallest?    
+
+
+We can answer the above research question by exploring the *quantitative* `budget_2013` variable.  Quantitative variables require different summary tools than categorical variables. We’ll explore two methods for graphing quantitative variables: histograms and density plots.  Both of these has strengths/weaknesses in helping us visualize the distribution of observed values.  
+
+In their examination, keep your eyes on the following.
+
+- **center**: Where's the center of the distribution?  What's a typical value of the variable?
+- **variability**: How spread out are the values?  A lot or a little? 
+- **shape**: How are values distributed along the observed range?  Is the distribution symmetric, right-skewed, left-skewed, bi-modal, or uniform (flat)?    
+- **outliers**: Are there any *outliers*, ie. values that are unusually large/small relative to the bulk of other values?    
+- **contextual implications**: Interpret these features in the context of your research.  How would you describe your findings to a broad audience?
+
+### Histograms {-}
+
+Histograms are constructed by (1) dividing up the observed range of the variable into 'bins' of equal width; and (2) counting up the number of cases that fall into each bin.  
+
+```{example}
+Try out the code below.  At each step determine how each piece of code contributes to the plot.    
+
+```
+
+> ANSWER:
+
+```{r eval=TRUE}
+# plot 1: set up a plotting frame
+ggplot(bechdel, aes(x = budget_2013))
+
+# plot 2: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_histogram()
+
+# plot 3: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_histogram() +
+  labs(x = "Budget ($)", y = "Number of movies")
+
+# plot 4: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_histogram(color = "white") +
+  labs(x = "Budget ($)", y = "Number of movies")
+
+# plot 5: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_histogram(fill = "white") +
+  labs(x = "Budget ($)", y = "Number of movies")
+
+# plot 6: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_histogram(color = "white", binwidth = 500000) +
+  labs(x = "Budget ($)", y = "Number of movies")
+
+# plot 7: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_histogram(color = "white", binwidth = 200000000) +
+  labs(x = "Budget ($)", y = "Number of movies")
+```
+
+
+
+```{example}
+Summarize the visualizations.    
+  
+  a. Describe the problem in choosing a bin width that's not too wide and not too narrow, but just right.    
+  b. What did you learn about the distribution of the `budget_2013` variable?    
+  c. Why does adding `color = "white"` improve the visualization?
+
+```
+
+> ANSWER: 
+
+
+### Density plots {-}
+
+
+**Density plots** are essentially smooth versions of the histogram.  Instead of sorting cases into discrete bins, the "density" of cases is calculated across the entire range of values.  The greater the number of cases, the greater the density!  The density is then scaled so that the area under the density curve **always equals 1** and the area under any fraction of the curve represents the fraction of cases that lie in that range.  
+
+```{example}
+Try the following code and assess what each line does.
+
+```
+
+> ANSWER:
+
+```{r, eval=TRUE}
+# plot 1: set up the plotting frame
+ggplot(bechdel, aes(x = budget_2013))
+
+# plot 2: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_density()
+
+# plot 3: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_density() +
+  labs(x = "Budget ($)")
+
+# plot 4: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_density(color = "red") +
+  labs(x = "Budget ($)")
+
+# plot 5: what changed / how did we change it?
+ggplot(bechdel, aes(x = budget_2013)) +
+  geom_density(fill = "red") +
+  labs(x = "Budget ($)")
+```
+
+
+
+```{exercise}
+The histogram and density plot both allow us to visualize the distribution of a quantitative variable.  What are the pros/cons of each?  Discuss.
+```
+
+> ANSWER:
+
+
+## Practice {-}
+
+```{exercise}
+In July 2016, fivethirtyeight.com published the article ["Hip-Hop is Turning on Donald Trump""](https://projects.fivethirtyeight.com/clinton-trump-hip-hop-lyrics/).  You can find the supporting data table `hiphop_cand_lyrics` in the `fivethirtyeight` package:    
+```
+
+```{r eval=TRUE}
+library(fivethirtyeight)
+data(hiphop_cand_lyrics)
+```
+
+a. What are the *cases* in this data set?    
+
+> ANSWER:
+
+b. Use RStudio functions to:    
+  - summarize the number of cases in `hiphop_cand_lyrics`    
+  - examine the first cases of `hiphop_cand_lyrics`    
+  - list out the names of all variables in `hiphop_cand_lyrics`
+
+> ANSWER:
+
+```{r}
+#fill in here
+```
+
+```{exercise}
+Let's start our investigation of hip hop data by asking "Who?"; that is, let's identify patterns in which 2016 presidential candidates popped up in hip hop lyrics.    
+  
+  a. Use an RStudio function to determine the category labels used for the `candidate` variable.    
+  b. Use `table` to construct a table of the number of cases that fall into each `candidate` category.    
+  c. Construct a single plot that allows you to investigate the prevalence of each candidate in hip hop.  Make the following modifications:    
+    - change the axis labels    
+    - change the fill colors    
+  d. Summarize your findings about the 2016 candidates in hip hop.
+        
+```
+
+> ANSWER:
+
+```{r}
+#fill in here
+```
+
+```{exercise}
+Next, consider the release dates of the hip hop songs.    
+  
+  a. Construct a histogram of the release dates with the following modifications:    
+    - change the fill color of the bins    
+    - change the bin width to a meaningful size    
+  b. Construct a density plot of the release dates with the following modifications:    
+    - change the fill color    
+  c. Summarize your findings about release date
+
+```
+
+> ANSWER:
+
+```{r}
+#fill in here
+```
+
+```{exercise}
+No class will teach you everything you need to know about RStudio or programming in general. Thus, being able to find help online is an important skill.  To this end, make a single visualization that incorporates the following modifications to your density plot from above.  This will require a little Googling and/or use of the visualization cheat sheet.    
+
+  - Add a title or caption.    
+  - Add *transparency* to the fill color.    
+  - Calculate the mean (ie. average) release date and median release date:
+
+```
+
+```{r eval=TRUE}
+mean(hiphop_cand_lyrics$album_release_date)
+median(hiphop_cand_lyrics$album_release_date)
+```    
+
+Add two vertical lines to your plot: one representing the mean and the other representing the median. Use two different colors and/or line types.    
+
+  - Change the limits of the x-axis to range from 1980-2020.
+  
+> ANSWER:
+
+```{r}
+#fill in here
+```  
