@@ -1,0 +1,62 @@
+```{r 05_setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+Load required packages
+```{r}
+library(tidyverse)
+```
+
+
+Explore the `diamonds` data from the `ggplot2` package
+```{r}
+?diamonds
+```
+
+
+# Visualizing 3 Categorical Vars
+```{r}
+ggplot(data = diamonds, mapping = aes(x = cut, fill = color)) +
+  geom_bar() +
+  facet_wrap(~clarity)
+
+```
+
+# Visualizing 2 Categorical and 1 Numerical Vars
+
+## option 1: histogram & density
+```{r}
+ggplot(data = diamonds, mapping = aes(x = price, fill = color)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~cut)
+```
+
+## Option 2: Boxplot & Violin
+
+```{r}
+ggplot(data = diamonds, mapping = aes(x = price, y = color)) +
+  geom_boxplot() +
+  facet_wrap(~cut)
+```
+
+
+# Visualizing 1 Categorical and 2 Numerical Vars
+
+## Option 1: Scatter Plot
+```{r}
+ggplot(data = diamonds, mapping = aes(x = price, y = carat, color = cut)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "lm")
+```
+
+## Option 2: Heatmap
+
+
+## Option 3: Star Plot
+
+# Visualizing 3 Numerical Variables
+```{r}
+ggplot(data = diamonds, mapping = aes(x = price, y = carat, color = depth)) +
+  geom_point()
+```
+
