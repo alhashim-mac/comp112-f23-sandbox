@@ -47,9 +47,10 @@ Make a single scatterplot visualization that demonstrates the relationship betwe
 
 ```{r fig.alt = 'Write alt text here'}
 #fill in 
-ggplot(data = education, aes(x = salary, y = sat, color = expend)) +
+ggplot(data = education, aes(x = salary, y = sat, color = cut(expend, 3)))+
   geom_point() +
-  geom_smooth(se = FALSE)
+  geom_smooth(se = FALSE, method = "lm") +
+  theme_classic()
 
 ```
 
@@ -64,7 +65,9 @@ a. Make a univariate visualization of the `fracCat` variable to better understan
 > ANSWER: 
 
 ```{r fig.alt = 'Write alt text here'}
-#fill in 
+ggplot(data = education, mapping = aes(x = fracCat)) +
+  geom_bar() +
+  theme_classic()
 
 
 ```
@@ -74,8 +77,8 @@ b. Make a bivariate visualization that demonstrates the relationship between `fr
 > ANSWER: 
 
 ```{r fig.alt = 'Write alt text here'}
-#fill in 
-
+ggplot(data = education, mapping = aes(y = sat, x = fracCat)) +
+  geom_boxplot()
 
 ```
 
@@ -84,7 +87,9 @@ c. Make a trivariate visualization that demonstrates the relationship between `f
 > ANSWER: 
 
 ```{r fig.alt = 'Write alt text here'}
-#fill in 
+ggplot(data = education, mapping = aes(x = expend, y = sat, color = fracCat)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
 
 
 ```
@@ -111,7 +116,7 @@ ed_mat <- data.matrix(ed) #convert to a matrix format
 
 heatmap.2(ed_mat,
   Rowv = NA, Colv = NA, scale = "column",
-  keysize = 0.7, density.info = "none",
+  keysize = .7, density.info = "none",
   col = hcl.colors(256), margins = c(10, 20),
   colsep = c(1:7), rowsep = (1:50), sepwidth = c(0.05, 0.05),
   sepcolor = "white", cexRow = 2, cexCol = 2, trace = "none",
