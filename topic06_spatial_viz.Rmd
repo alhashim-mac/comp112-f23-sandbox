@@ -47,7 +47,7 @@ ggmap(ggmap = map_us) +
 ## interactive map
 Only a sample of 10 stores
 ```{r}
-leaflet(data = sample_n(starbucks_us, 10)) %>% 
+leaflet(data = sample_n(starbucks_us, 500)) %>% 
   addTiles() %>% 
   addMarkers()
 ```
