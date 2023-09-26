@@ -20,7 +20,8 @@ library(ggplot2)
 Below and example that illustrate how to add an alternative text to a visualization.  The alternative text will be embedded into the generated HTML file.  The alternative text will be hidden from the viewer, however, it will appear when the visualization fails to render.  The alternative text will also be used by the screen reader application, e.g., Windows 11 Narrator (win+ctr+enter to activate/deactivate), as a description for the visualization.
 ```{r, fig.alt="A bar chart showing the number of cylinders of the cars in the `mtcars` data set from the `datasets` package.  Most of the cars are equipped with 8 cylinders, followed by 4 cylinders, and then 6 cylinders."}
 ggplot(data = mtcars, mapping = aes(x=cyl)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Number of Cylinders of Cars in mtcars Dataset",
+       x = "", 
+       y = "")
 ```
-
-
