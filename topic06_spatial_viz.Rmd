@@ -1,0 +1,104 @@
+Load required packages
+```{r}
+library(tidyverse)
+library(ggmap)
+library(ggthemes)
+library(leaflet)
+```
+
+
+Read Starbucks data
+```{r}
+starbucks <- read_csv("https://bcheggeseth.github.io/112_spring_2023/data/starbucks.csv")
+glimpse(starbucks)
+```
+
+Starbucks stores in US only
+```{r}
+starbucks_us <- starbucks %>% filter(Country == "US")
+glimpse(starbucks_us)
+```
+
+
+Visualize individual stores
+```{r}
+ggplot(data = starbucks, mapping = aes(x = Longitude, y = Latitude)) +
+  geom_point()
+```
+
+Visualize individual stores on top of a map
+```{r}
+# get a map of the world
+world_map <- get_stamenmap(
+  bbox = c(left = -180, bottom = -57, right = 179, top = 82.1),
+  maptype = "terrain",
+  zoom = 2
+)
+
+
+# show the map beneath the scatter plot
+ggmap(ggmap = world_map) +
+  geom_point(data = starbucks, 
+             mapping = aes(x = Longitude, y = Latitude))
+```
+
+Visualize stores individually using an interactive map
+```{r}
+leaflet(data = starbucks) %>% 
+  addTiles() %>% 
+  addMarkers()
+```
+
+
+Visualize stores as a summary using contour
+```{r}
+ggmap(ggmap = world_map) +
+  stat_density_2d(data = starbucks, mapping = aes(x = Longitude, y = Latitude))
+```
+
+... show filed contours
+```{r}
+ggmap(ggmap = world_map) +
+  stat_density_2d_filled(
+    data = starbucks, 
+    mapping = aes(x = Longitude, y = Latitude),
+    alpha = .3,
+    bins = 5)
+```
+
+... or add color to the slices of the contours
+```{r}
+ggmap(ggmap = world_map) +
+  stat_density_2d(data = starbucks, 
+                  mapping = aes(x = Longitude, y = Latitude, fill = after_stat(level)), 
+                  geom = "polygon",
+                  alpha = .3,
+                  color = "black",
+                  bins = 5) +
+  scale_fill_gradient(low = "darkblue", high = "red", guide = "none")
+```
+
+
+```{r}
+US_map2 <- get_stamenmap(
+  bbox = c(left = -132, bottom = 20, right = -65, top = 55),
+  maptype = "toner-lite",
+  zoom = 5
+)
+
+# Contour plot
+# Density plot
+ggmap(world_map) +
+  stat_density_2d(
+    data = starbucks,
+    aes(x = Longitude, y = Latitude, fill = stat(level)),
+     alpha = .2, geom = "polygon"
+  ) +
+  scale_alpha(guide = 'none') +
+  scale_fill_gradient(
+    low = "red", high = "green",
+    guide = 'none'
+  ) + 
+  theme_map()
+```
+
