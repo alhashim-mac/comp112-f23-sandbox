@@ -4,6 +4,8 @@ library(tidyverse)
 library(ggmap)
 library(ggthemes)
 library(leaflet)
+library(openintro)
+library(sf)
 ```
 
 
@@ -18,58 +20,60 @@ Starbucks stores in US only
 starbucks_us <- starbucks %>% filter(Country == "US")
 glimpse(starbucks_us)
 ```
+# Visualize Stores as Individual Points
 
-
-Visualize individual stores
+## Scatter plot
 ```{r}
-ggplot(data = starbucks, mapping = aes(x = Longitude, y = Latitude)) +
+ggplot(data = starbucks_us, mapping = aes(x = Longitude, y = Latitude)) +
   geom_point()
 ```
 
-Visualize individual stores on top of a map
+## Scatter plot + map underneath
 ```{r}
 # get a map of the world
-world_map <- get_stamenmap(
-  bbox = c(left = -180, bottom = -57, right = 179, top = 82.1),
+map_us <- get_stamenmap(
+  bbox = c(left = -132, bottom = 20, right = -65, top = 55),
   maptype = "terrain",
-  zoom = 2
+  zoom = 5
 )
 
 
 # show the map beneath the scatter plot
-ggmap(ggmap = world_map) +
-  geom_point(data = starbucks, 
+ggmap(ggmap = map_us) +
+  geom_point(data = starbucks_us, 
              mapping = aes(x = Longitude, y = Latitude))
 ```
 
-Visualize stores individually using an interactive map
+## interactive map
+Only a sample of 10 stores
 ```{r}
-leaflet(data = starbucks) %>% 
+leaflet(data = sample_n(starbucks_us, 10)) %>% 
   addTiles() %>% 
   addMarkers()
 ```
 
+# As s summary
 
-Visualize stores as a summary using contour
+## Contour
 ```{r}
-ggmap(ggmap = world_map) +
-  stat_density_2d(data = starbucks, mapping = aes(x = Longitude, y = Latitude))
+ggmap(ggmap = map_us) +
+  stat_density_2d(data = starbucks_us, mapping = aes(x = Longitude, y = Latitude))
 ```
 
-... show filed contours
+## Contour with colored slices (not good)
 ```{r}
-ggmap(ggmap = world_map) +
+ggmap(ggmap = map_us) +
   stat_density_2d_filled(
-    data = starbucks, 
+    data = starbucks_us, 
     mapping = aes(x = Longitude, y = Latitude),
     alpha = .3,
     bins = 5)
 ```
 
-... or add color to the slices of the contours
+## Contour with colored slices
 ```{r}
-ggmap(ggmap = world_map) +
-  stat_density_2d(data = starbucks, 
+ggmap(ggmap = map_us) +
+  stat_density_2d(data = starbucks_us, 
                   mapping = aes(x = Longitude, y = Latitude, fill = after_stat(level)), 
                   geom = "polygon",
                   alpha = .3,
@@ -78,27 +82,28 @@ ggmap(ggmap = world_map) +
   scale_fill_gradient(low = "darkblue", high = "red", guide = "none")
 ```
 
-
+## choropleth map
 ```{r}
-US_map2 <- get_stamenmap(
-  bbox = c(left = -132, bottom = 20, right = -65, top = 55),
-  maptype = "toner-lite",
-  zoom = 5
-)
+# compute number of stores in each state
+# add full state names
+starbucks_us_states <- starbucks_us %>% 
+  count(`State/Province`) %>% 
+  mutate(state_name = str_to_lower(abbr2state(`State/Province`)))
 
-# Contour plot
-# Density plot
-ggmap(world_map) +
-  stat_density_2d(
-    data = starbucks,
-    aes(x = Longitude, y = Latitude, fill = stat(level)),
-     alpha = .2, geom = "polygon"
-  ) +
-  scale_alpha(guide = 'none') +
-  scale_fill_gradient(
-    low = "red", high = "green",
-    guide = 'none'
-  ) + 
-  theme_map()
+map_us_polygons <- map_data("state")
+
+ggplot(data = starbucks_us_states) + 
+  geom_map(map = map_us_polygons, mapping = aes(map_id = state_name, fill = n)) +
+  expand_limits(x = map_us_polygons$long, y = map_us_polygons$lat)
+```
+
+
+## interactive map
+```{r}
+map_us_json <- geojsonio::geojson_read("https://rstudio.github.io/leaflet/json/us-states.geojson", what = "sp")
+
+leaflet(data = map_us_json) %>% 
+  addTiles() %>% 
+  addPolygons()
 ```
 
