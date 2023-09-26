@@ -1,4 +1,5 @@
 Load required packages
+
 ```{r}
 library(tidyverse)
 library(ggmap)
@@ -8,29 +9,55 @@ library(openintro)
 library(sf)
 ```
 
-
 Read Starbucks data
+
 ```{r}
 starbucks <- read_csv("https://bcheggeseth.github.io/112_spring_2023/data/starbucks.csv")
 glimpse(starbucks)
 ```
 
 Starbucks stores in US only
+
 ```{r}
 starbucks_us <- starbucks %>% filter(Country == "US")
 glimpse(starbucks_us)
 ```
+
 # Visualize Stores as Individual Points
 
 ## Scatter plot
+
 ```{r}
 ggplot(data = starbucks_us, mapping = aes(x = Longitude, y = Latitude)) +
   geom_point()
 ```
 
 ## Scatter plot + map underneath
+
+To find the bounding box of a region that you would like to visualize,
+
+1.  go to [OpenStreetMap website](https://www.openstreetmap.org/)
+2.  look up the region
+3.  click the export button located in the upper-left corner
+4.  note the 4 shown values: left, bottom, right, and top
+
+
+To find the different map types that can be used,
+
+1. type `?get_stamenmap` in the console
+2. in the help menu, note the different map types that can be used with the `maptype` argument
+
+
+To find the appropriate zoom level for the region,
+
+1. go to [Stamen website](https://maps.stamen.com/terrain/#9/44.9531/-93.0904)
+2. look up the region
+3. click the + or - buttons in the upper left corner till you find the desired zoom
+4. look at the URL of the page and note the value after the `terrain` keyword
+
+
 ```{r}
-# get a map of the world
+# download the map
 map_us <- get_stamenmap(
   bbox = c(left = -132, bottom = 20, right = -65, top = 55),
   maptype = "terrain",
@@ -38,14 +65,16 @@ map_us <- get_stamenmap(
 )
 
 
-# show the map beneath the scatter plot
+# visualize the map then the scatter plot
 ggmap(ggmap = map_us) +
   geom_point(data = starbucks_us, 
              mapping = aes(x = Longitude, y = Latitude))
 ```
 
 ## interactive map
+
 Only a sample of 10 stores
+
 ```{r}
 leaflet(data = sample_n(starbucks_us, 500)) %>% 
   addTiles() %>% 
@@ -55,12 +84,14 @@ leaflet(data = sample_n(starbucks_us, 500)) %>%
 # As s summary
 
 ## Contour
+
 ```{r}
 ggmap(ggmap = map_us) +
   stat_density_2d(data = starbucks_us, mapping = aes(x = Longitude, y = Latitude))
 ```
 
 ## Contour with colored slices (not good)
+
 ```{r}
 ggmap(ggmap = map_us) +
   stat_density_2d_filled(
@@ -71,6 +102,7 @@ ggmap(ggmap = map_us) +
 ```
 
 ## Contour with colored slices
+
 ```{r}
 ggmap(ggmap = map_us) +
   stat_density_2d(data = starbucks_us, 
@@ -83,6 +115,7 @@ ggmap(ggmap = map_us) +
 ```
 
 ## choropleth map
+
 ```{r}
 # compute number of stores in each state
 # add full state names
@@ -97,8 +130,8 @@ ggplot(data = starbucks_us_states) +
   expand_limits(x = map_us_polygons$long, y = map_us_polygons$lat)
 ```
 
-
 ## interactive map
+
 ```{r}
 map_us_json <- geojsonio::geojson_read("https://rstudio.github.io/leaflet/json/us-states.geojson", what = "sp")
 
@@ -106,4 +139,3 @@ leaflet(data = map_us_json) %>%
   addTiles() %>% 
   addPolygons()
 ```
-
