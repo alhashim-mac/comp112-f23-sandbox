@@ -10,7 +10,7 @@ ggplot(d) +
   geom_density(mapping = aes(x=x))
 ```
 
-With bound between 2 & 4
+With bound between min and max values in the data
 ```{r}
 ggplot(d) +
   geom_density(mapping = aes(x=x), bounds = c(min(d), max(d)))
