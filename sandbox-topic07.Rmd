@@ -1,0 +1,94 @@
+Load required packages
+```{r}
+library(tidyverse)
+library(mosaicData)
+```
+
+
+# Load the `Birthdays` data from the `mosaicData` package
+```{r}
+bds <- Birthdays    # store into a variable
+glimpse(bds)        # similar to head but print vertically instead
+```
+
+# Converting between Datatypes
+```{r}
+class(bds)
+
+bds_tb <- as_tibble(bds)  # convert to tibble
+class(bds_tb)
+
+head(bds)
+head(bds_tb)
+
+bds[1]        # yields datafram
+bds$state     # yields vector
+bds[[1]]      # yields vector
+
+bds_tb[1]     # yields tibble
+bds$state     # yields vector
+bds[[1]]      # yields vector
+```
+
+
+# Constructing tibbles
+```{r}
+# Construct tibble by columns
+t1 <- tibble(sn=1:5, label=c("A", "B", "C", "D", "E"))
+t1
+
+# Construct tibble by rows
+t2 <- tribble(~sn, ~label,
+              1  , "A",
+              2  , "B",
+              3  , "C",
+              4  , "D",
+              5  , "E")
+t2
+```
+# Create nested data
+```{r}
+glimpse(storms)
+
+storms_n <- storms %>% group_by(name) %>% nest()
+glimpse(storms_n)
+storms_n$name[[1]]
+storms_n$data[[1]]
+```
+
+
+# Reshape Nested Data
+```{r}
+glimpse(starwars)
+starwars %>% 
+  unnest(cols = films)
+
+starwars %>% 
+  unnest_longer(col = films)
+
+starwars %>% 
+  unnest_wider(col = films, names_sep = "_")
+
+starwars %>% 
+  hoist(.col = films, first_film = 1, second_film = 2)
+```
+
+# Transform Nested Data
+## Create new List-Column
+```{r}
+storms_n_t <- storms_n %>% 
+  rowwise() %>% 
+  mutate(n = list(dim(data)))
+glimpse(storms_n_t)
+
+storms_n_t$n[[1]]
+```
+
+## Collapse Multiple List-Columns into a single list-column
+```{r}
+starwars %>% 
+  rowwise() %>% 
+  mutate(transport = list(append(vehicles, starships)))
+```
+
+
