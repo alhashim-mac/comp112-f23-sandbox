@@ -71,7 +71,7 @@ ggmap(ggmap = map_us) +
              mapping = aes(x = Longitude, y = Latitude))
 ```
 
-## interactive map
+## Interactive map
 
 Only a sample of 10 stores
 
@@ -114,7 +114,7 @@ ggmap(ggmap = map_us) +
   scale_fill_gradient(low = "darkblue", high = "red", guide = "none")
 ```
 
-## choropleth map
+## Choropleth map
 
 ```{r}
 # compute number of stores in each state
@@ -130,7 +130,7 @@ ggplot(data = starbucks_us_states) +
   expand_limits(x = map_us_polygons$long, y = map_us_polygons$lat)
 ```
 
-## interactive map
+## Interactive map
 
 ```{r}
 map_us_json <- geojsonio::geojson_read("https://rstudio.github.io/leaflet/json/us-states.geojson", what = "sp")
