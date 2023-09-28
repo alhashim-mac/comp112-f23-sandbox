@@ -1,0 +1,102 @@
+```{r}
+# North Carolina births and sids deaths
+nc <- st_read(system.file("shape/nc.shp", package = "sf"),
+  quiet = TRUE
+) %>%
+  mutate(sid_per_1000birth_79 = SID79 / BIR79 * 1000)
+
+# Compute centroid (center) of each county
+county_centroid_lat_long <- as_tibble(st_coordinates(st_centroid(nc))) %>%
+  rename(
+    centr_long = X,
+    centr_lat = Y
+  )
+
+# County names and sid_per_1000birth_79
+nc_centroid_county <- st_drop_geometry(nc) %>%
+  select(NAME, sid_per_1000birth_79)
+
+# All centroid level info
+nc_centroid <- county_centroid_lat_long %>%
+  bind_cols(nc_centroid_county)
+```
+
+
+```{r}
+nc %>%
+  select(NAME, geometry) %>%
+  slice(1:5)
+```
+
+```{r}
+leaflet(nc) %>%
+  addTiles() %>%
+  addPolygons()
+```
+
+Add color
+```{r}
+# creates a function that can be used to map a variable to
+# the color palette using viridis 
+pal <- colorNumeric("viridis",
+  domain = nc$sid_per_1000birth_79
+)
+
+leaflet(nc) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~ pal(sid_per_1000birth_79), # fills according to that variable
+    fillOpacity = 0.7
+  ) # like alpha in ggplot
+```
+
+Add anotations
+```{r}
+# creates a function that can be used to map a variable to
+# the color palette using viridis
+pal <- colorNumeric("viridis",
+  domain = nc$sid_per_1000birth_79
+)
+
+leaflet(nc) %>%
+  addTiles() %>%
+  addPolygons(
+    # skips drawing the borders:
+    stroke = FALSE,
+    # fills according to variable of hex colors:
+    fillColor = ~ pal(sid_per_1000birth_79),
+    # changes transparency, like alpha in ggplot
+    fillOpacity = 0.7,
+    # how much to simplify the plot when zooming:
+    smoothFactor = 0.5,
+    # changes what happens to the shape when we mouse over it
+    highlight = highlightOptions(
+      weight = 5,
+      color = "black",
+      fillOpacity = 0.9,
+      bringToFront = FALSE
+    )
+  ) %>%
+  addCircles(
+    data = nc_centroid,
+    lng = ~centr_long,
+    lat = ~centr_lat,
+    # label that appears when you click on the marker,
+    # in this case county name and sid_per_1000birth_79
+    # rounded to the 2nd decimal
+    popup = ~ paste(NAME, ": ",
+      round(sid_per_1000birth_79, 2),
+      sep = ""
+    ),
+    radius = 2
+  ) %>%
+  # Add a legend
+  addLegend(
+    pal = pal,
+    values = ~sid_per_1000birth_79,
+    opacity = 0.5,
+    title = 'SID Rate (per 1000) in 1979',
+    position = "bottomright"
+  )
+```
+
