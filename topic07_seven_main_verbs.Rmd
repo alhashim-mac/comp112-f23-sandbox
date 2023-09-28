@@ -1,0 +1,44 @@
+# Build a toy data frame
+```{r}
+df <- data.frame(
+  xm=c("A", "A", "B", "B", "C", "C", "C"),
+  xz=c("R", "G", "G", "G", "R", "G", "B"),
+  y =c(10 , 12 , 19 , 14 , 1  , 3  , 4))
+df
+```
+
+# Select
+```{r}
+select(df, xm, y)
+```
+
+# mutate
+```{r}
+mutate(df, y = y*2)
+```
+
+# filter
+```{r}
+filter(df, xm=="A")
+```
+
+# arrange
+```{r}
+arrange(df, y)
+```
+
+# group_by
+```{r}
+group_by(df, xm)
+```
+
+# summarize
+```{r}
+summarize(df, mean=mean(y))
+```
+
+# piping
+```{r}
+df %>% group_by(xm) %>% summarize(mean=mean(y))
+```
+
