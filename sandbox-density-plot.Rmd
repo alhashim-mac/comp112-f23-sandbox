@@ -1,0 +1,18 @@
+Create toy data
+```{r}
+d <- data.frame(x=c(1, 2, 2, 3, 3, 3, 3, 4, 4, 5))
+d
+```
+
+With infinite bounds
+```{r}
+ggplot(d) +
+  geom_density(mapping = aes(x=x))
+```
+
+With bound between 2 & 4
+```{r}
+ggplot(d) +
+  geom_density(mapping = aes(x=x), bounds = c(min(d), max(d)))
+```
+
