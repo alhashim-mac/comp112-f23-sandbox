@@ -1,8 +1,14 @@
+load required packages
+```{r}
+library(sf)
+library(tidyverse)
+```
+
+
 ```{r}
 # North Carolina births and sids deaths
 nc <- st_read(system.file("shape/nc.shp", package = "sf"),
-  quiet = TRUE
-) %>%
+  quiet = TRUE) %>%
   mutate(sid_per_1000birth_79 = SID79 / BIR79 * 1000)
 
 # Compute centroid (center) of each county
