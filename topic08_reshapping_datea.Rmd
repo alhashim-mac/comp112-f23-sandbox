@@ -1,0 +1,72 @@
+Load required packages
+```{r}
+library(tidyverse)
+```
+# Data
+Sale of different products over 3 years
+```{r Create Toy Data}
+d <- tribble(~year, ~product, ~sale,
+        2021, "A", 10,
+        2021, "B", 20,
+        2021, "C", 7,
+        2022, "A", 5,
+        2022, "B", 30,
+        2023, "C", 35,
+        2023, "A", 3)
+d
+```
+
+
+# Wider Format
+```{r No Filling Missing Values}
+pivot_wider(data = d, 
+                  names_from = product, 
+                  values_from = sale)
+```
+
+```{r Filling Missing Values}
+w <- pivot_wider(data = d, 
+                  names_from = product, 
+                  values_from = sale, 
+                  values_fill = 0)
+w
+```
+
+```{r Sample Need}
+d %>% 
+  pivot_wider(names_from = product, values_from = sale, values_fill = 0) %>% 
+  ggplot(mapping = aes(x = A, y = A)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+# Longer Format
+```{r}
+d2 <- pivot_longer(data = w,
+             cols = c("A", "B", "C"), names_to = "product",
+             values_to = "sale")
+d2
+```
+
+
+```{r sample use}
+ggplot(data = d2, mapping = aes(x = year, y = sale, color = product)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 7, color = "white") +
+  geom_point(size = 5) +
+  theme_classic()
+
+```
+
+
+```{r Wide + Long}
+d %>% 
+  pivot_wider(names_from = product, values_from = sale, values_fill = 0) %>% 
+  pivot_longer(cols = c("A", "B", "C"), names_to = "product", values_to = "sale") %>% 
+  ggplot(data = d2, mapping = aes(x = year, y = sale, color = product)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 7, color = "white") +
+  geom_point(size = 5) +
+  theme_classic()
+```
+
