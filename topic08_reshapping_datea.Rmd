@@ -35,7 +35,7 @@ w
 ```{r Sample Need}
 d %>% 
   pivot_wider(names_from = product, values_from = sale, values_fill = 0) %>% 
-  ggplot(mapping = aes(x = A, y = A)) +
+  ggplot(mapping = aes(x = A, y = B)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE)
 ```
@@ -69,4 +69,15 @@ d %>%
   geom_point(size = 5) +
   theme_classic()
 ```
+
+```{r withoud wide then long}
+ggplot(data = d, mapping = aes(x = year, y = sale, color = product)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 7, color = "white") +
+  geom_point(size = 5) +
+  theme_classic()
+
+```
+
+
 
