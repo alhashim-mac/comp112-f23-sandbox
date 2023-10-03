@@ -1,0 +1,21 @@
+```{r}
+ggplot(data = richmondway, aes(x = Episode_order, y = F_count_RK)) + geom_text(aes(label = "F**k!", color = Coaching_flag), angle = 10, size = 6, fontface = "bold") + scale_color_manual(values = c("red", "darkred")) + theme(panel.background = element_rect(fill = "lightblue"), panel.grid.minor = element_line(color = "lightblue"), panel.grid.major = element_line(color = "lightblue")) + labs(x = "Episode", y = "Roy Kent F Count", title = "Roy Kent F Count Per Episode, Coaching and Not Coaching") + geom_smooth(method = "lm", se = FALSE, color = "white")
+```
+
+```{r}
+ggplot(data = richmondway, 
+       aes(x = Episode_order, y = F_count_RK)) +
+  geom_text(aes(label = "F**k!", color = Coaching_flag), 
+            angle = 10, 
+            size = 6, 
+            fontface = "bold") + 
+  scale_color_manual(values = c("red", "darkred")) +
+  theme(panel.background = element_rect(fill = "lightblue"),
+        panel.grid.minor = element_line(color = "lightblue"),
+        panel.grid.major = element_line(color = "lightblue")) +
+  labs(x = "Episode", 
+       y = "Roy Kent F Count", 
+       title = "Roy Kent F Count Per Episode, 
+       Coaching and Not Coaching") + 
+  geom_smooth(method = "lm", se = FALSE, color = "white")
+```
