@@ -1,0 +1,45 @@
+---
+title: "Comp/Stat 112: Tidy Tuesday 5"
+author: "INSERT STUDENT NAME HERE (COLLABORATOR NAMES HERE)"
+output:
+  bookdown::html_document2:
+    split_by: none
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      toc_collapsed: true
+    number_sections: false
+---
+
+```{r data_setup}
+# Get the Data
+library(tidyverse)
+
+haunted_places <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-10-10/haunted_places.csv')
+```
+
+## Data Context
+
+### Haunted Places in the United States
+
+Halloween is coming soon, so we're exploring a spooky dataset: a compilation of Haunted Places in the United States. 
+The dataset was [compiled by Tim Renner](https://github.com/timothyrenner/shadowlands-haunted-places), using [The Shadowlands Haunted Places Index](https://www.theshadowlands.net/places/), and [shared on data.world](https://data.world/timothyrenner/haunted-places).
+
+We're also using this dataset as a reminder that [several R packages for spatial data are heading to the graveyard next week](https://geocompx.org/post/2023/rgdal-retirement/index.html).
+Don't be tricked by their demise!
+
+```{r}
+glimpse(haunted_places)
+```
+
+## Research Question
+
+Develop a research question that you are interested in. *You may need to play with the data a little bit to learn more about what the values mean before you decide on a question.*
+
+## Data Visualization
+
+Create a visualization that answers or addresses your research question.
+
+```{r}
+
+```
