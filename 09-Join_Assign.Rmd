@@ -1,3 +1,6 @@
+---
+output: html_document
+---
 ```{r 09_setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 library(tidyverse)
@@ -14,10 +17,12 @@ Grades <- read_csv("https://bcheggeseth.github.io/112_spring_2023/data/grades.cs
 Grades <- Grades %>%
   select(sid, sessionID, grade) %>%
   distinct(sid, sessionID, .keep_all = TRUE)
+glimpse(Grades)
 ```
 
 ```{r, cache=TRUE}
 Courses <- read_csv("https://bcheggeseth.github.io/112_spring_2023/data/courses.csv")
+glimpse(Courses)
 ```
 
 
@@ -33,7 +38,17 @@ Try yourself and then check online for solution.
 > ANSWER: 
 
 ```{r}
+# Student Perspective
+left_join(x = Grades, y = Courses, by = join_by(sessionID)) %>% 
+  group_by(sid) %>% 
+  summarize(mean = mean(enroll, rm.na = TRUE)) %>% 
+  summarize(mean = mean(mean))
 
+# Provost Perspective
+Courses %>% 
+  group_by(sessionID) %>%
+  summarize(sum = sum(enroll)) %>% 
+  summarise(mean(sum))
 ```
 
 ## Filtering joins {-}
@@ -48,7 +63,12 @@ Try yourself and then check online for solution.
 > ANSWER: 
 
 ```{r}
-
+Courses %>% 
+  group_by(sessionID) %>% 
+  summarize(total = sum(enroll)) %>% 
+  arrange(desc(total)) %>% 
+  head(4) %>% 
+  semi_join(x = Grades, y = .)
 ```
 
 
@@ -62,6 +82,9 @@ Try yourself and then check online for solution.
 > ANSWER: 
 
 ```{r}
+Courses %>% 
+  filter(dept == "J") %>% 
+  semi_join(x = Grades, y = .)
 
 ```
 
