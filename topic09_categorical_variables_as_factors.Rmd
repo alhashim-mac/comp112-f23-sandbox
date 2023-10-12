@@ -1,0 +1,76 @@
+Load required packages
+```{r}
+library(gsheet)
+library(tidyverse)
+```
+
+Read responses from GSheet suing the [gsheet package](https://github.com/maxconway/gsheet)
+```{r}
+responses <- gsheet2tbl("docs.google.com/spreadsheets/d/1NvSSzcjYY-0TTdL9Nw7jb6zgoIZIFt4dPK1HpYkesLs")
+
+# rename the response column
+responses <- responses %>% 
+  rename(`fras_level` = `Indicate you current level of frustration with this class`)
+
+responses
+```
+
+Plot responses
+```{r, fig.height=2, fig.width=3}
+responses %>% 
+  ggplot(aes(x = fras_level)) +
+  geom_bar()
+```
+
+Change to factor, order level alphabetically
+```{r, fig.height=2, fig.width=3}
+responses %>% 
+  mutate(fras_level = factor(fras_level)) %>% 
+  ggplot(aes(x = fras_level)) +
+  geom_bar()
+```
+
+Change to factor, order levels manually
+```{r, fig.height=2, fig.width=3}
+responses %>% 
+  mutate(fras_level = fct_relevel(fras_level, c("Very much", "Little bit", "Not at all"))) %>% 
+  ggplot(aes(x = fras_level)) +
+  geom_bar()
+```
+
+
+Change to factor, order levels based on their frequencies (highest to lowest)
+```{r, fig.height=2, fig.width=3}
+responses %>% 
+  mutate(fras_level = fct_infreq(fras_level)) %>% 
+  ggplot(aes(x = fras_level)) +
+  geom_bar()
+```
+
+Change to factor (if not) then reverses current order of levels
+```{r, fig.height=2, fig.width=3}
+responses %>% 
+  mutate(fras_level = fct_rev(fras_level)) %>% 
+  ggplot(aes(x = fras_level)) +
+  geom_bar()
+```
+
+
+
+Change to factor (if not), rename levels
+```{r, fig.height=2, fig.width=3}
+responses %>% 
+  mutate(fras_level = fct_recode(fras_level, "NAA" = "Not at all")) %>% 
+  ggplot(aes(x = fras_level)) +
+  geom_bar()
+```
+
+
+Combine multiple functions
+Change to factor, order based on frequency from lowest to highest
+```{r, fig.height=2, fig.width=3}
+responses %>% 
+  mutate(fras_level = fct_rev(fct_infreq(fras_level))) %>% 
+  ggplot(aes(x = fras_level)) +
+  geom_bar()
+```
