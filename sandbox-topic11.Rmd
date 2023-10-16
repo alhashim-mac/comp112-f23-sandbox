@@ -1,0 +1,178 @@
+Load required packages
+```{r}
+library(tidyverse)
+library(ggmap)
+library(tidylog)
+```
+
+Load Kiva Partners data
+```{r}
+partners <- read_csv("https://bcheggeseth.github.io/112_spring_2023/data/kiva_partners2.csv")
+glimpse(partners)
+```
+
+# 11.1: Regional distribution
+```{r}
+partners %>% 
+  select(countries.region, loans_posted, total_amount_raised, loans_posted) %>% 
+  group_by(countries.region) %>% 
+  summarize(total_num_partners = n(),
+            total_loans_posted = sum(loans_posted),
+            grand_total_amount_raised = sum(total_amount_raised),
+            mean_loan_size = grand_total_amount_raised/total_loans_posted)
+```
+
+# 11.2: Partners in Africa
+```{r}
+partners %>% 
+  filter(countries.region == "Africa") %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = lon, y = lat, size = total_amount_raised))
+```
+
+# Load Kiva Loans
+```{r}
+loans <- read_csv("https://bcheggeseth.github.io/112_spring_2023/data/kiva_loans_small.csv")
+glimpse(loans)
+```
+
+# 11.3 Preprocessing
+```{r}
+loans2 <- loans %>% 
+  filter(funded_amount != 0) %>% 
+  mutate(post_dt = paste(posted_yr, posted_mo, posted_day, sep = "-"),
+         post_time = paste(posted_hr, posted_min, posted_sec, sep = ":"),
+         post_date = ymd_hms(paste(post_dt, post_time, sep = " ")),
+         
+         funded_dt = paste(funded_yr, funded_mo, funded_day, sep = "-"),
+         funded_time = paste(funded_hr, funded_min, funded_sec, sep = ":"),
+         funded_date = ymd_hms(paste(funded_dt, funded_time, sep = " "))) %>% 
+  select(loan_id,
+         status,
+         funded_amount, 
+         paid_amount, 
+         sector, 
+         location.country, 
+         lat, 
+         lon, 
+         partner_id, 
+         post_date, 
+         funded_date)
+glimpse(loans2)
+```
+
+# 11.4 Loan by Country
+```{r}
+loans2 %>%
+  group_by(location.country) %>% 
+  summarize(number_of_loans = n()) %>% 
+  arrange(desc(number_of_loans)) %>% 
+  head(5)
+```
+
+```{r}
+loans2 %>% 
+  group_by(location.country) %>% 
+  summarize(total_funded_loan_amount = sum(funded_amount)) %>% 
+  arrange(desc(total_funded_loan_amount)) %>% 
+  head(5)
+```
+
+# 11.5 Sector Analysis
+```{r}
+loans2 %>% 
+  group_by(sector) %>% 
+  summarize(num_of_loans = n(),
+            avg_loan_size = sum(funded_amount)/num_of_loans) %>% 
+  ggplot(mapping = aes(x = num_of_loans, y = avg_loan_size)) +
+  geom_text(mapping = aes(label = sector))
+```
+
+# 11.6: Join Practice
+```{r}
+loans3 <- partners %>%
+  select(partner_id, countries.region) %>% 
+  right_join(loans2)
+glimpse(loans3)
+```
+
+# 11.7: Defaults
+a
+```{r}
+default_data <- loans3 %>% 
+  filter(status %in% c("paid", "defaulted"))
+glimpse(default_data)
+```
+
+b
+```{r}
+default_data %>% 
+  ggplot() +
+  geom_density(mapping = aes(x = funded_amount, fill = status), alpha = .8)
+```
+
+c
+```{r}
+default_data %>% 
+  mutate(funded_amount_cut = cut(funded_amount, breaks = seq(0, 10000, by = 1000))) %>% 
+  ggplot() +
+  geom_bar(mapping = aes(x = funded_amount_cut, fill = status),
+                 position = "fill")
+```
+
+d
+```{r}
+default_data %>% 
+  group_by(partner_id, status) %>% 
+  summarize(n = n()) %>% 
+  pivot_wider(names_from = status, values_from = n, values_fill = 0) %>% 
+  filter(defaulted > 0) %>% 
+  mutate(perc_defaulted = defaulted/(defaulted+paid)) %>% 
+  filter(perc_defaulted >= .1) %>% 
+  arrange(desc(perc_defaulted))
+```
+
+# 11.8: Funding Time
+a
+```{r}
+loans4 <- loans3 %>% 
+  mutate(days_to_fund = round(difftime(funded_date, post_date, units = "days"),0))
+glimpse(loans4)
+```
+
+b
+```{r}
+loans4 <- loans4 %>%
+  filter(days_to_fund >= 0)
+glimpse(loans4)
+```
+
+c
+```{r}
+loans4 %>%
+  group_by(countries.region) %>%
+  summarize(mean_days_to_fund = mean(days_to_fund)) %>%
+  mutate(countries.region = fct_reorder(countries.region, mean_days_to_fund, .desc = FALSE)) %>%
+  ggplot() +
+  geom_col(mapping = aes(y = countries.region, x = mean_days_to_fund))
+```
+
+d
+```{r}
+loans4 %>%
+  group_by(sector) %>%
+  summarize(mean_days_to_fund = mean(days_to_fund)) %>%
+  mutate(sector =
+           fct_reorder(sector, mean_days_to_fund, .desc = FALSE)) %>%
+  ggplot() +
+  geom_col(mapping = aes(y = sector, x = mean_days_to_fund))
+```
+
+e
+```{r}
+loans4 %>%
+  ggplot(mapping = aes(x = funded_amount, y = days_to_fund, color = countries.region)) +
+  geom_point(alpha = .2) + 
+  geom_smooth(method = "lm", stat = "smooth", se = FALSE)
+```
+
