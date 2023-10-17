@@ -12,17 +12,19 @@ sch <- gsheet2tbl("docs.google.com/spreadsheets/d/1p_FUBk9jNRIT_hHMhvkLCjURxmXpk
 sch <- sch %>% 
   mutate(start = mdy(start), end = mdy(end)) %>% 
 
-sch
+print(sch)
 ```
 
 ```{r}
 sch %>% 
   ggplot() +
-  geom_segment(mapping = aes(x=start, xend=end, y=1, yend=1)) +
-  geom_point(mapping = aes(x = start, y = 1), color = "green") +
-  geom_point(mapping = aes(x = end, y = 1,), color = "red") +
+  geom_segment(mapping = aes(x=start, xend=end, y=1, yend=1), linewidth = 1, color = "gray") +
+  geom_point(data = sch %>% filter(type == "topic"), mapping = aes(x = start, y = 1), color = "green", size = 2) +
+  geom_point(data = sch %>% filter(type == "topic"), mapping = aes(x = end, y = 1,), color = "red", size = 2) +
+  geom_point(data = sch %>% filter(type != "topic"), mapping = aes(x = end, y = 1,), color = "black", size = 2, shape = 4) +
   geom_text(mapping = aes(x = start, y = 1, label = name, angle = 90, hjust = 1.2)) +
-  theme_ipsum()
+  labs(y = "", x = "") +
+  theme_classic()
 ```
 
 
