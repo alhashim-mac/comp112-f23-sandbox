@@ -1,0 +1,9 @@
+Load required packages
+```{r}
+library(ggmap)
+```
+
+```{r}
+(map <- get_googlemap("waco texas", zoom = 12))
+```
+
