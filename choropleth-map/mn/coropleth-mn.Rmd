@@ -1,0 +1,31 @@
+The work in this file was inspired by [this YouTube video](https://www.youtube.com/embed/nlcZcWJiyX8/) by Sérgio Costa.
+
+Load packages
+```{r}
+library(ggplot2)
+library(sf)
+library(dplyr)
+library(tidylog)
+```
+
+Read MN counties data downloaded from [Minnesota Legislature](https://www.gis.lcc.mn.gov/html/download.html): Administrative Boundaries section -> Counties, Year 2010 -> Download -> Shapefile. The page was found via a Google search using the term `shape file for minnesota`.  The search could have been done using the term `geojson minnesota` instead.
+```{r}
+mn <- read_sf("./county2010/", "county2010")
+glimpse(mn)
+```
+
+Plot using base R--base R creates a plot for each variable in the dataset other than the geometry variable used to define the boundries of the counties
+```{r}
+plot(mn, max.plot = 26)
+```
+
+
+Plot using ggplot
+```{r}
+ggplot() +
+  geom_sf(data = mn, aes(fill = POPULATION), color='transparent') +
+  geom_sf(data = mn, fill='transparent', color = 'white') +
+  scale_fill_viridis_b() +
+  theme_void()
+```
+
