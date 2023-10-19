@@ -1,0 +1,19 @@
+Load required packages
+```{r}
+library(sf)
+library(ggplot2)
+```
+
+Read boundaries for regions downloaded from [HumData](https://data.humdata.org/dataset/kontur-population-saudi-arabia)
+```{r}
+sa_gpkg <- read_sf("kontur_population_SA_20220630.gpkg")
+sa_gpkg
+```
+
+Plot
+```{r}
+sa_gpkg %>% 
+  ggplot() +
+  geom_sf(mapping = aes(fill = population))
+```
+
