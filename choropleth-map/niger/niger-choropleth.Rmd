@@ -1,0 +1,19 @@
+Load required packages
+```{r}
+library(sf)
+library(ggplot2)
+```
+
+
+Read data
+```{r}
+niger <- read_sf("gadm41_NER_shp", "gadm41_NER_1")
+```
+
+Plot
+```{r}
+niger %>% 
+  ggplot() +
+  geom_sf(mapping = aes(fill = 3))
+```
+
