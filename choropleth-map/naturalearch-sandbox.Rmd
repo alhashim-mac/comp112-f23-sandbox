@@ -1,0 +1,13 @@
+```{r}
+library(rnaturalearth)
+```
+
+```{r}
+sp::plot(ne_countries())
+```
+
+
+```{r}
+sp::plot(ne_countries(scale = 10, country = "saudi arabia"))
+```
+
