@@ -1,0 +1,112 @@
+```{r}
+library(ggplot2)
+library(dplyr)
+library(forcats)
+library(tidylog)
+```
+
+# World
+
+Data describe the boundary of countries in the world
+```{r}
+map_data("world")
+```
+
+Regions; represent countries in this case
+```{r}
+map_data("world") %>% 
+  distinct(region)
+```
+
+Top regions (countries) with least number of points for their description
+```{r}
+map_data("world") %>% 
+  group_by(region) %>% 
+  summarise(n = n()) %>% 
+  arrange(n) %>% 
+  head(20) %>% 
+  mutate(region = fct_reorder(region, n)) %>% 
+  ggplot() +
+  geom_col(mapping = aes(y = factor(region), x = n))
+```
+
+Top regions (countries) with most number of points for their description
+```{r}
+map_data("world") %>% 
+  group_by(region) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n)) %>% 
+  head(20) %>% 
+  mutate(region = fct_reorder(region, n)) %>% 
+  # sample_n(20) %>% 
+  ggplot() +
+  geom_col(mapping = aes(y = factor(region), x = n))
+```
+
+
+# Plot
+```{r}
+map_data("world") %>% 
+  left_join(tribble(~region, ~num,
+                    "Australia", 15,
+                    "Russia", 20,
+                    "France", 15)) %>% 
+  ggplot() + 
+  geom_polygon(mapping = aes(x = long, y = lat, group = group, fill = num), 
+               color = "white")
+```
+
+
+# USA
+
+Data
+```{r}
+map_data("state")
+```
+
+
+Regions; represent states in this case
+```{r}
+map_data("state") %>% 
+  distinct(region)
+```
+
+Plot
+```{r}
+map_data("state") %>% 
+  left_join(tribble(~region, ~num,
+                    "arizona", 10,
+                    "minnesota", 20,
+                    "wisconsin", 15)) %>% 
+  ggplot() + 
+  geom_polygon(mapping = aes(x = long, y = lat, group = group, fill = num), 
+               color = "white")
+```
+
+# Italy
+
+Data
+```{r}
+map_data("italy")
+```
+
+
+Regions; represent administrative units (maybe) in this case
+```{r}
+map_data("italy") %>% 
+  distinct(region)
+```
+
+Plot
+```{r}
+map_data("italy") %>% 
+  left_join(tribble(~region, ~num,
+                    "Bolzano-Bozen", 10,
+                    "Varese", 20,
+                    "Rieti", 15)) %>%
+  ggplot() + 
+  geom_polygon(mapping = aes(x = long, y = lat, group = group, fill = num), 
+               color = "white")
+```
+
+
