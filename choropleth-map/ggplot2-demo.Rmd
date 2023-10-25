@@ -1,3 +1,8 @@
+---
+title: Plot Maps with ggplot2 Demo
+auther: Amin G. Alhashim
+---
+
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -5,46 +10,53 @@ library(forcats)
 library(tidylog)
 ```
 
+# Introduction
+This file demonstrate 
+
+1. how to access boundary data provided by the `maps` package via the `map_data` function from the `ggplot2` package.
+2. how to plot the bounday data usign the `geom_polygon` from the `ggplot2` package
+
 # World
 
-Data describe the boundary of countries in the world
-```{r}
+## Border Data
+
+```{r, results='hide'}
 map_data("world")
 ```
 
-Regions; represent countries in this case
+Regions, countries here in this case
 ```{r}
 map_data("world") %>% 
   distinct(region)
 ```
 
-Top regions (countries) with least number of points for their description
+Top regions, countries, with least number of points for their border, least complex borders
 ```{r}
 map_data("world") %>% 
   group_by(region) %>% 
   summarise(n = n()) %>% 
   arrange(n) %>% 
   head(20) %>% 
-  mutate(region = fct_reorder(region, n)) %>% 
+  mutate(region = fct_reorder(region, desc(n))) %>% 
   ggplot() +
   geom_col(mapping = aes(y = factor(region), x = n))
 ```
 
-Top regions (countries) with most number of points for their description
+Top regions, countries, with most number of points for their borders, most complex borders
 ```{r}
 map_data("world") %>% 
   group_by(region) %>% 
   summarise(n = n()) %>% 
   arrange(desc(n)) %>% 
   head(20) %>% 
-  mutate(region = fct_reorder(region, n)) %>% 
+  mutate(region = fct_reorder(region, desc(n))) %>% 
   # sample_n(20) %>% 
   ggplot() +
   geom_col(mapping = aes(y = factor(region), x = n))
 ```
 
 
-# Plot
+## Plot
 ```{r}
 map_data("world") %>% 
   left_join(tribble(~region, ~num,
@@ -57,21 +69,21 @@ map_data("world") %>%
 ```
 
 
-# USA
+# USA States
 
-Data
+## Border Data
 ```{r}
 map_data("state")
 ```
 
 
-Regions; represent states in this case
+Regions, states in this case
 ```{r}
 map_data("state") %>% 
   distinct(region)
 ```
 
-Plot
+## Plot
 ```{r}
 map_data("state") %>% 
   left_join(tribble(~region, ~num,
@@ -85,19 +97,19 @@ map_data("state") %>%
 
 # Italy
 
-Data
+## Border Data
 ```{r}
 map_data("italy")
 ```
 
 
-Regions; represent administrative units (maybe) in this case
+Regions, administrative units (maybe) in this case
 ```{r}
 map_data("italy") %>% 
   distinct(region)
 ```
 
-Plot
+## Plot
 ```{r}
 map_data("italy") %>% 
   left_join(tribble(~region, ~num,
