@@ -1,0 +1,43 @@
+```{r}
+library(sf)
+library(tidyverse)
+library(viridis)
+```
+
+# Read Borders
+```{r}
+nl <- read_sf("gadm41_NLD_shp/", "gadm41_NLD_1")
+glimpse(nl)
+```
+
+# Plot
+```{r}
+nl %>% 
+  ggplot() +
+  geom_sf()
+```
+
+
+# Plot with Random Variable
+```{r}
+nl %>% 
+  left_join(tribble(~NAME_1, ~val, 
+                    "Drenthe", 1000, 
+                    "Flevoland", 100, 
+                    "Gelderland", 50)) %>% 
+  mutate(val_cat = cut(val, 
+                       breaks = c(0, 50, 100, 1000, Inf),
+                       labels = c("<=50", "(50-100]", "(100-1000]", ">1000"))) %>% 
+  ggplot() +
+  geom_sf(mapping = aes(fill = val_cat)) +
+  scale_fill_viridis_d(
+    name = "Randome Variable",
+    guide = guide_legend(direction = "horizontal",
+                         title.position = "top",
+                         label.position = "bottom",
+                         keywidth = 3,
+                         keyheight = .5)) +
+  theme(legend.position = "bottom")
+```
+
+
