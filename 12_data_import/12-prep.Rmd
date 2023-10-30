@@ -1,0 +1,78 @@
+# Load Required Libraries
+```{r}
+library(readr)
+library(tidyverse)
+```
+
+# Load File
+```{r}
+imdb_messy <- read_csv("./data/imdb_5000_messy.csv")
+```
+# Inspect
+## Name of Variables
+```{r}
+names(imdb_messy)
+```
+
+## `Color` Variable
+### Existing values
+```{r}
+levels(as.factor(imdb_messy$color))
+```
+
+### Count of each value
+```{r}
+table(as.factor(imdb_messy$color))
+```
+
+```{r}
+dplyr::count(imdb_messy, color)
+```
+
+# Fix
+## `Color` Variable
+### Convert to factor
+```{r}
+imdb_messy <- imdb_messy %>% 
+  mutate(color = factor(color))
+```
+
+### Recode
+```{r}
+imdb_messy <- imdb_messy %>% 
+  mutate(color = fct_recode(color, 
+                            "Black and White" = "B&W",
+                            "Color" = "color",
+                            "Color" = "COLOR"))
+```
+
+# Inpect
+## Count of Missing Values
+```{r}
+colSums(is.na(imdb_messy))
+```
+
+## `actor_1_facebook_likes` Variable
+```{r}
+imdb_messy %>% 
+  filter(is.na(actor_1_facebook_likes))
+```
+
+# Fix
+## Remove `NA`
+```{r}
+imdb_messy_sub <- imdb_messy %>% 
+  drop_na(actor_1_facebook_likes)
+
+imdb_messy_sub
+```
+
+## Imbute `NA`
+```{r}
+imdb_messy_imbute <- imdb_messy %>% 
+  replace_na(list(actor_1_facebook_likes=0))
+
+imdb_messy_imbute %>% 
+  filter(is.na(actor_1_facebook_likes))
+```
+

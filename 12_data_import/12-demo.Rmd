@@ -1,0 +1,17 @@
+# Load Required Libraries
+```{r}
+library(readr)
+```
+
+# Open Folder in Exploer
+Go to **Files** tab -> Click **Gear** -> Click **Show Folder in New Window**
+
+
+# Import Dataset Wizard
+RStudio has a wizard called **Import Dataset** under the *Environment* tab that can be used to generate R code necessary to import a dataset into RStudio.  
+
+**TODO**: Let's use the wizard to help us generate the R code necessary to import the `fruits-v0.csv` located in the `data` folder.
+```{r}
+
+```
+
