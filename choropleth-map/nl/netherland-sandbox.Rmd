@@ -20,7 +20,7 @@ nl %>%
 
 
 # Plot with Random Variable
-```{r}
+```{r, fig.width=unit(3000, "px"), fig.height=unit(2400, "px")}
 nl %>% 
   left_join(tribble(~NAME_1, ~val, 
                     "Drenthe", 1000, 
@@ -38,6 +38,7 @@ nl %>%
                          label.position = "bottom",
                          keywidth = 3,
                          keyheight = .5)) +
+  theme_void() +
   theme(legend.position = "bottom")
 ```
 
