@@ -2,6 +2,7 @@
 library(sf)
 library(tidyverse)
 library(viridis)
+library(ggiraph)
 ```
 
 # Read Borders
@@ -40,4 +41,27 @@ nl %>%
   theme(legend.position = "bottom")
 ```
 
+# Add tooltip
+```{r}
+p <- nl %>% 
+  left_join(tribble(~NAME_1, ~val, 
+                    "Drenthe", 1000, 
+                    "Flevoland", 100, 
+                    "Gelderland", 50)) %>% 
+  mutate(val_cat = cut(val, 
+                       breaks = c(0, 50, 100, 1000, Inf),
+                       labels = c("<=50", "(50-100]", "(100-1000]", ">1000"))) %>% 
+  ggplot() +
+  geom_sf_interactive(mapping = aes(fill = val_cat, tooltip = paste(NAME_1, val))) +
+  scale_fill_viridis_d(
+    name = "Randome Variable",
+    guide = guide_legend(direction = "horizontal",
+                         title.position = "top",
+                         label.position = "bottom",
+                         keywidth = 3,
+                         keyheight = .5)) +
+  theme(legend.position = "bottom")
+
+  girafe(ggobj = p)
+```
 
