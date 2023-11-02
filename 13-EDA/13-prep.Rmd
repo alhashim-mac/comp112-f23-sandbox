@@ -1,0 +1,55 @@
+# Load Required Packages
+```{r}
+source("help-functions.R")
+library(tidyverse)
+library(GGally)
+```
+
+# Crimes Dataset
+## Load Data
+```{r}
+crime <- read_csv("http://datasets.flowingdata.com/crimeRatesByState2005.csv")
+glimpse(crime)
+```
+## Descriptive Statistics & Univariate Viz
+```{r}
+print_summary(crime)
+```
+
+## Bivariate Vis between Numerical Variables
+
+### Using `graphics::pairs`
+```{r}
+crime %>% 
+  filter(state != "District of Columbia", state != "United States") %>% 
+  select(-state) %>% 
+  pairs(panel = panel.smooth)
+```
+### Using `GGally::ggpairs`
+```{r}
+crime %>% 
+  filter(state != "District of Columbia", state != "United States") %>% 
+  select(-state) %>% 
+  ggpairs(aes(alpha = .4)) +
+  theme_minimal()
+```
+
+### Using `GGally::ggpairs` with Custimization
+```{r}
+lowerFn = function(data, mapping, method = "lm", ...) {
+  p <- ggplot(data = data, mapping = mapping) +
+    geom_point(colour = "blue") +
+    geom_smooth(method = method, color = "red", ...)
+  
+  p
+}
+
+crime %>% 
+  filter(state != "District of Columbia", state != "United States") %>% 
+  select(-state) %>% 
+  ggpairs(lower = list(continuous = wrap(lowerFn, method = "lm")),
+          diag  = list(continuous = wrap("barDiag", colour = "blue")),
+          upper = list(continuous = wrap("cor", size = 5))) +
+  theme_minimal()
+```
+
