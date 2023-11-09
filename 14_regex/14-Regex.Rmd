@@ -1,0 +1,21 @@
+Load Required Packages
+```{r}
+library(tidyverse)
+```
+
+# Load Data
+```{r}
+courses <- read_csv('https://bcheggeseth.github.io/112_fall_2023/data/Mac2022Courses.csv')
+glimpse(courses)
+```
+# 14.1 Re-arrange Data Table
+```{r}
+courses %>% 
+  separate(number, c("dept", "numsec", "section"), sep = "[ -]") %>% 
+  mutate(avail_max = str_replace(avail_max, "Closed ", "")) %>% 
+  separate(avail_max, c("avail", "max"), sep = " / ") %>% 
+  mutate(max = as.numeric(max), avail = as.numeric(avail)) %>% 
+  mutate(enrollment = (max - avail)) %>% 
+  glimpse()
+```
+
