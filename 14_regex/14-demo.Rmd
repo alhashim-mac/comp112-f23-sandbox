@@ -1,0 +1,33 @@
+Load Required Packages
+```{r}
+library(airports)
+library(tidyverse)
+```
+
+Load Dataset from `airports` Package
+```{r}
+ap <- airports::usairports
+glimpse(ap)
+```
+
+# Select Columns Matching Pattern
+```{r}
+ap %>% 
+  select(matches("a")) %>% 
+  glimpse()
+```
+
+# Filter Rows Matching Pattern
+```{r}
+ap %>% 
+  filter(str_detect(city, "A")) %>% 
+  glimpse()
+```
+
+# Alter Variable
+```{r}
+ap %>% 
+  mutate(arp_latitude = str_replace_all(arp_latitude, "-", "_")) %>% 
+  glimpse()
+```
+
