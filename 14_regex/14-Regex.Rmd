@@ -1,6 +1,7 @@
 Load Required Packages
 ```{r}
 library(tidyverse)
+library(tidylog)
 ```
 
 # Load Data
@@ -8,14 +9,40 @@ library(tidyverse)
 courses <- read_csv('https://bcheggeseth.github.io/112_fall_2023/data/Mac2022Courses.csv')
 glimpse(courses)
 ```
+
 # 14.1 Re-arrange Data Table
 ```{r}
-courses %>% 
+course2 <- courses %>% 
   separate(number, c("dept", "numsec", "section"), sep = "[ -]") %>% 
   mutate(avail_max = str_replace(avail_max, "Closed ", "")) %>% 
   separate(avail_max, c("avail", "max"), sep = " / ") %>% 
-  mutate(max = as.numeric(max), avail = as.numeric(avail)) %>% 
-  mutate(enrollment = (max - avail)) %>% 
+  mutate(max = as.numeric(max), 
+         avail = as.numeric(avail),
+         enrollment = (max - avail)) %>% 
+  separate(time, c("start_time", "end_time"), sep = "-") %>% 
+  mutate(start_time = parse_date_time(start_time, orders = "%H%M")) %>% 
+  mutate(start_time = hour(start_time) + round(minute(start_time)/60,2)) %>% 
+  mutate(end_time = parse_date_time(end_time, orders = "%H%M")) %>% 
+  mutate(end_time = hour(end_time) + round(minute(end_time)/60,2)) %>% 
+  glimpse()
+```
+
+# 14.2 WA Courses
+```{r}
+course2 %>% 
+  filter(gen_ed == "Writing WA") %>% 
+  group_by(dept) %>% 
+  summarise(n = n()) %>% 
+  ggplot() +
+  geom_col(mapping = aes(y = dept, x = n))
+```
+
+# 14.3 Filter Cases
+```{r}
+course2 %>% 
+  filter(!dept %in% c("PE", "INTD")) %>%
+  filter(!(dept %in% c("MUSI", "THDA") & as.numeric(numsec) < 100)) %>%
+  filter(!str_detect(desc, "(\\bLab\\b|\\bLaboratory\\b)")) %>% 
   glimpse()
 ```
 
