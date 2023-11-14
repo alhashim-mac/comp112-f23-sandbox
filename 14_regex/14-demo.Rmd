@@ -13,7 +13,7 @@ glimpse(ap)
 # Select Columns Matching Pattern
 ```{r}
 ap %>% 
-  select(matches("a")) %>% 
+  select(matches("a.{4}")) %>% 
   glimpse()
 ```
 
@@ -27,7 +27,22 @@ ap %>%
 # Alter Variable
 ```{r}
 ap %>% 
-  mutate(arp_latitude = str_replace_all(arp_latitude, "-", "_")) %>% 
+  mutate(arp_latitude = str_replace_all(arp_latitude, "-", "****")) %>% 
   glimpse()
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
