@@ -1,0 +1,46 @@
+---
+title: "Comp/Stat 112: Tidy Tuesday 9"
+author: "INSERT STUDENT NAME HERE (COLLABORATOR NAMES HERE)"
+output:
+  bookdown::html_document2:
+    split_by: none
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      toc_collapsed: true
+    number_sections: false
+---
+
+Load required packages
+```{r}
+library(tidyverse)
+```
+
+
+# Data Context
+
+## Diwali Sales Data
+
+This week is Diwali, the festival of lights! The data this week comes from [sales data](https://www.kaggle.com/datasets/saadharoon27/diwali-sales-dataset) for a retail store during the Diwali festival period in India. The data is shared on Kaggle by Saad Haroon.
+
+This week we're sharing Python data analysis examples! There's a few out there, but these ones from [Brushan Shelke](https://www.kaggle.com/code/bhushanshelke69/diwali-data-exploration) or [Vikas Vachheta](https://github.com/vikasvachheta08/Diwali_Sales_Analysis_Using_Python) (see the Diwali_Sales_Analysis.ipynb file for the code) are some data exploration analyses.
+
+## Load Data
+
+```{r data_setup}
+house <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-11-14/diwali_sales_data.csv')
+glimpse(house)
+```
+
+
+# Research Question
+
+Develop a research question that you are interested in. *You may need to play with the data a little bit to learn more about what the values mean before you decide on a question.*
+
+# Data Visualization
+
+Create a visualization that answers or addresses your research question.
+
+```{r}
+
+```
