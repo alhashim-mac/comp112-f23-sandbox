@@ -31,7 +31,8 @@ nl %>%
                        labels = c("<=50", "(50-100]", "(100-1000]", ">1000"))) %>% 
   ggplot() +
   geom_sf(mapping = aes(fill = val_cat)) +
-  scale_fill_viridis_d(
+  scale_fill_brewer(
+    palette = "Oranges",
     name = "Randome Variable",
     guide = guide_legend(direction = "horizontal",
                          title.position = "top",
